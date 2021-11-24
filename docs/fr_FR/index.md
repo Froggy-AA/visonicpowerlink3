@@ -13,8 +13,8 @@ Le plugin premet de :
 
 ### Pré requis
 
-Il est nécessaire de posséder une alarme visonic avec un powerlink 3.
-Sur certaines alarmes, l'api est activée par défaut. Sur d'autres, il semble qu'il faille  l'activer via le mode installateur. A priori, cela se fait dans les menus : 03: Centrale  -> 80: DOM. TIER. PART -> activer
+Il est nécessaire de posséder une alarme visonic avec un powerlink 3. A priori, il faut un firmware de l'alarme en version 19 minimum. 
+
 
 ### Principe
 
@@ -24,7 +24,11 @@ Il est conseillé d'avoir un jeedom avec une IP fixe. Dans le cas contraire, en 
 
 ### Compatibilité et tests
 
-Le plugin a uniquement été testé sur un powermaster 30 avec le module powerlink v3. Il DEVRAIT fonctionner quelque soit l'alarme pourvue qu'elle dispose de module powerlink3. 
+Le plugin a uniquement été testé sur un powermaster 30 avec le module powerlink v3. 
+Le plugin a été testé sur :
+ - Powermaster 30, v19 - Powerlink 3, v7.5 raw
+ - Powermaster 33 EXP G2, v19  - Powerlink 3, v7.5 raw
+
 Il n'a pas été testé avec un module powerlink 3.1
 
 Merci de faire part de vos retours concernant la compatibilité.
