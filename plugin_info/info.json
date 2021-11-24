@@ -20,8 +20,8 @@
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"changelog" : "https://github.com/Froggy-AA/visonicpowerlink3/blob/main/docs/fr_FR/changelog.md",
+	"documentation" : "https://github.com/Froggy-AA/visonicpowerlink3/blob/main/docs/fr_FR/index.md",
 	"link" : {
 		"forum":"",
 		"video" : ""
