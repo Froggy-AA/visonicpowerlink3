@@ -33,12 +33,17 @@ class visonicpowerlink3 extends eqLogic {
 	public static $_widgetPossibility = array();
    */
     
+  const cron_actif = false;
+  
     /*     * ***********************Methode static*************************** */
 
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom*/
       public static function cron() {
-		  
+		/*
+        if (!cron_actif)
+          	return;
+        
 		  foreach (self::byType('visonicpowerlink3', true) as $equipement) { //parcours tous les équipements actifs du plugin
 			$cmd = $equipement->getCmd(null, 'refreshPartial'); //retourne la commande "refresh" si elle existe
 			if (!is_object($cmd)) { //Si la commande n'existe pas
@@ -46,6 +51,7 @@ class visonicpowerlink3 extends eqLogic {
 			}
 			$cmd->execCmd(); //la commande existe on la lance
 		}
+        */
       }
      
 
@@ -64,7 +70,12 @@ class visonicpowerlink3 extends eqLogic {
     /*
      * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom*/
       public static function cron15() {
-		foreach (self::byType('visonicpowerlink3', true) as $equipement) { //parcours tous les équipements actifs du plugin
+		/*
+        
+        if (!cron_actif)
+          	return;
+        
+        foreach (self::byType('visonicpowerlink3', true) as $equipement) { //parcours tous les équipements actifs du plugin
 			$cmd = $equipement->getCmd(null, 'refresh'); //retourne la commande "refreshAll" si elle existe
 			if (!is_object($cmd)) { //Si la commande n'existe pas
 				continue; //continue la boucle
@@ -73,6 +84,7 @@ class visonicpowerlink3 extends eqLogic {
 			
 			
 		}
+        */
       }
      
     
@@ -607,6 +619,20 @@ class visonicpowerlink3 extends eqLogic {
 		$armHomeAllParts->setIsVisible(0);
 		$armHomeAllParts->save();
 
+      
+      	// Client registred
+		$clientRegistred = $this->getCmd(null, 'clientRegistred');
+		if (!is_object($clientRegistred)) {
+			$clientRegistred = new visonicpowerlink3Cmd();
+			$clientRegistred->setName(__('Client enregistré sur l API', __FILE__));
+		}
+		$clientRegistred->setLogicalId('clientRegistred');
+		$clientRegistred->setEqLogic_id($this->getId());
+		$clientRegistred->setType('info');
+		$clientRegistred->setSubType('binary');
+        $clientRegistred->setValue(0);
+        $clientRegistred->setIsVisible(0);
+		$clientRegistred->save();
 		
 		
 		log::add('visonicpowerlink3', 'debug', 'postSave end');
@@ -625,7 +651,6 @@ class visonicpowerlink3 extends eqLogic {
     /*
      * Non obligatoire : permet de modifier l'affichage du widget (également utilisable par les commandes)
       public function toHtml($_version = 'dashboard') {
-
       }
      */
 
@@ -669,7 +694,7 @@ class visonicpowerlink3 extends eqLogic {
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => "",
 		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 30,
+		CURLOPT_TIMEOUT => 5,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => "POST",
 		CURLOPT_POSTFIELDS => "{\n\t\"params\": [\"".$ipJeedom."\", ".$codeAlarme.", \"user\"],\n\t\"jsonrpc\": \"2.0\",\n\t\"method\": \"PmaxService/registerClient\", \n\t\"id\":11\n}",
@@ -682,6 +707,7 @@ class visonicpowerlink3 extends eqLogic {
 
 
 	  $response = curl_exec($curl);
+      $err = curl_error($curl);
 	  
 
 
@@ -689,22 +715,23 @@ class visonicpowerlink3 extends eqLogic {
 
 	  curl_close($curl);
 
-	   if ($response === false || strpos($response, 'error') !== false) {
+      if ($err || strpos($response, 'error') !== false) {
+        
+          if ($err != '') {
+                    log::add('visonicpowerlink3', 'error', 'registerClient - Error curl : '.$err);
+                }
+                else {
+                    log::add('visonicpowerlink3', 'error', 'registerClient - Error in response : '.$response);
+                }
 
-			if ($response === false) {
-				$err = curl_error($curl);
-				log::add('visonicpowerlink3', 'error', 'registerClient - Error curl : '.$err);
-			} 
-			else {
-				log::add('visonicpowerlink3', 'error', 'registerClient - Error in response : '.$response);
-			}
-		}
-/*
-	  else {
-		  
-	  }
-		*/
+          $this->checkAndUpdateCmd('clientRegistred', 0);
+      }
+      else {
+        $this->checkAndUpdateCmd('clientRegistred', 1);
+      }
 
+      
+	 
 		log::add('visonicpowerlink3', 'debug', 'registerClient - End');
 	}
 	
@@ -719,9 +746,7 @@ class visonicpowerlink3 extends eqLogic {
 		$codeAlarme = $this->getConfiguration("codeAlarme");
 /*		
 		$autorisationUsageCodeArmentDesarmement = $this->getConfiguration("autorisationUsageCodeArmentDesarmement");
-
 		$autorisationUtilisationCode = false;
-
 		if ($autorisationUsageCodeArmentDesarmement == "1") {
 			$autorisationUtilisationCode = true;
 			$codeAlarme = $this->getConfiguration("codeAlarme");
@@ -1041,5 +1066,3 @@ class visonicpowerlink3Cmd extends cmd {
 
     /*     * **********************Getteur Setteur*************************** */
 }
-
-

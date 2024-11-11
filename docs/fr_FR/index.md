@@ -112,6 +112,7 @@ Dans le désordre et selon ma disponibilité...
 	- Ajout du contrôle de la sirène (compliqué...)
 	- Ajout de la possiblilité d'armement immédiat
 	- Ajout du lancement des tests périodiques (si API fonctionnelle)
+	- Historisation ($cmd->addHistoryValue($value, $date);)
 
 
 ## Bugs connus
